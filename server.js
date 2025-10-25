@@ -1,4 +1,3 @@
-
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -38,9 +37,20 @@ if (process.env.USE_REDIS_ADAPTER === 'true' && process.env.REDIS_URL) {
 const io = new Server(server, ioOptions);
 
 io.on('connection', (socket) => {
-  // Add your custom event handlers here
+  console.log('Client connected:', socket.id);
+  socket.emit('hello', 'world'); // Send a test event to the client
+
   socket.on('join', (room) => {
     socket.join(room);
+    console.log(`Client ${socket.id} joined room: ${room}`);
+  });
+
+  socket.on('test', (msg) => {
+    console.log('Received test from client:', msg);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
   });
 });
 
